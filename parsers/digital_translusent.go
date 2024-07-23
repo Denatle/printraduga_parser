@@ -2,7 +2,6 @@ package parsers
 
 import (
 	"context"
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -16,7 +15,7 @@ import (
 type DigitalTranslusentParser struct {
 }
 
-func (p DigitalTranslusentParser) Parse() shared.CostInfo {
+func (p DigitalTranslusentParser) Parse() (shared.CostInfo, error) {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.Flag("headless", true))
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
@@ -46,18 +45,18 @@ func (p DigitalTranslusentParser) Parse() shared.CostInfo {
 		chromedp.Text("#pxpProducCalc > div.pxp-total-price > div > div.totalPriceContainer > div > span", &res, chromedp.NodeVisible),
 	)
 	if err != nil {
-		log.Fatal(err)
+		return shared.CostInfo{}, err
 	}
 	trimmedString := strings.Replace(res, " ", "", -1)
 	intVar, err := strconv.Atoi(trimmedString[:len(trimmedString)-3])
 	if err != nil {
-		log.Fatal(err)
+		return shared.CostInfo{}, err
 	}
 
 	return shared.CostInfo{
 		Name:       "Digital printing translusent",
 		Cost:       intVar,
-		ParserType: 0,
+		ParserType: shared.Translusent,
 		Link:       link,
-	}
+	}, nil
 }

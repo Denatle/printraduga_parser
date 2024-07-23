@@ -2,7 +2,6 @@ package parsers
 
 import (
 	"context"
-	"log"
 	"strconv"
 	"strings"
 
@@ -14,7 +13,7 @@ import (
 type CoralTranslusentParser struct {
 }
 
-func (p CoralTranslusentParser) Parse() shared.CostInfo {
+func (p CoralTranslusentParser) Parse() (shared.CostInfo, error) {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 	link := "https://www.coral-print.ru/pechat-nakleek/"
@@ -29,17 +28,17 @@ func (p CoralTranslusentParser) Parse() shared.CostInfo {
 		chromedp.Text(".vertical-align-middle > .price", &res, chromedp.NodeVisible),
 	)
 	if err != nil {
-		log.Fatal(err)
+		return shared.CostInfo{}, err
 	}
 	intVar, err := strconv.Atoi(strings.Replace(res, " руб", "", -1))
 	if err != nil {
-		log.Fatal(err)
+		return shared.CostInfo{}, err
 	}
 
 	return shared.CostInfo{
 		Name:       "Coral translusent",
 		Cost:       intVar,
-		ParserType: 0,
+		ParserType: shared.Translusent,
 		Link:       link,
-	}
+	}, nil
 }

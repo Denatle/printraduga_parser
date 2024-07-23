@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"printraduga_parser/excel"
 	parsers "printraduga_parser/parsers"
 	"printraduga_parser/shared"
 	"sync"
@@ -20,15 +21,20 @@ func main() {
 		go func() {
 			defer wg.Done()
 			log.Printf("Parser in process: %T\n", parser)
-			var result = parser.Parse()
+			result, err := parser.Parse()
+			if err != nil {
+				log.Printf("Error while parsing: %T; Error: %v", parser, err)
+				return
+			}
 			resultMutex.Lock()
 			results = append(results, result)
 			resultMutex.Unlock()
 		}()
 	}
 	wg.Wait()
-
-	for _, result := range results {
-		log.Println(result)
+	var writer shared.ExcelWriter = excel.DefaultExcelWriter{}
+	err := writer.Write("balls.xlsx", results)
+	if err != nil {
+		log.Printf("Writing error: %v", err)
 	}
 }

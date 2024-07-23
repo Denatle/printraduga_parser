@@ -7,20 +7,25 @@ import (
 )
 
 type Parser interface {
-	Parse() CostInfo
+	Parse() (CostInfo, error)
 }
 
 type CostInfo struct {
 	Name       string
-	ParserType int
+	ParserType ParserType
 	Cost       int
 	Link       string
 }
+type ParserType int
 
 const (
-	translusent = iota // 0
-	holo        = iota // 1
+	Translusent ParserType = iota // 0
+	Holo        ParserType = iota // 1
 )
+
+type ExcelWriter interface {
+	Write(filepath string, data []CostInfo) error
+}
 
 func RunWithTimeOut(ctx *context.Context, timeout time.Duration, tasks chromedp.Tasks) chromedp.ActionFunc {
 	return func(ctx context.Context) error {
