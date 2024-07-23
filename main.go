@@ -19,7 +19,7 @@ func main() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			log.Println("Parser in process: %v", parser)
+			log.Printf("Parser in process: %T\n", parser)
 			var result = parser.Parse()
 			resultMutex.Lock()
 			results = append(results, result)
