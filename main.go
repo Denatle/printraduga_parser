@@ -2,10 +2,11 @@ package main
 
 import (
 	"log"
+	"sync"
+
 	"printraduga_parser/excel"
 	parsers "printraduga_parser/parsers"
 	"printraduga_parser/shared"
-	"sync"
 )
 
 func main() {
