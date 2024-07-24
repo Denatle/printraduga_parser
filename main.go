@@ -34,7 +34,7 @@ func main() {
 	}
 	wg.Wait()
 	var writer shared.ExcelWriter = excel.DefaultExcelWriter{}
-	err := writer.Write("balls.xlsx", results)
+	err := writer.Write("parsing_result.xlsx", results)
 	if err != nil {
 		log.Printf("Writing error: %v", err)
 	}
