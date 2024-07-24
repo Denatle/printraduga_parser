@@ -15,7 +15,7 @@ import (
 type DigitalTranslusentParser struct {
 }
 
-func (p DigitalTranslusentParser) Parse() (shared.CostInfo, error) {
+func (p DigitalTranslusentParser) Parse() (shared.ParseResult, error) {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.Flag("headless", true))
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
@@ -45,18 +45,20 @@ func (p DigitalTranslusentParser) Parse() (shared.CostInfo, error) {
 		chromedp.Text("#pxpProducCalc > div.pxp-total-price > div > div.totalPriceContainer > div > span", &res, chromedp.NodeVisible),
 	)
 	if err != nil {
-		return shared.CostInfo{}, err
+		return shared.ParseResult{}, err
 	}
 	trimmedString := strings.Replace(res, " ", "", -1)
 	intVar, err := strconv.Atoi(trimmedString[:len(trimmedString)-3])
 	if err != nil {
-		return shared.CostInfo{}, err
+		return shared.ParseResult{}, err
 	}
 
-	return shared.CostInfo{
-		Name:       "Digital",
-		Cost:       intVar,
-		ParserType: shared.Translusent,
-		Link:       link,
+	return shared.ParseResult{
+		ParserType: "Translusent",
+		Data: shared.CostData{
+			Name: "Digital",
+			Cost: intVar,
+			Link: link,
+		},
 	}, nil
 }

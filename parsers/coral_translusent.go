@@ -13,7 +13,7 @@ import (
 type CoralTranslusentParser struct {
 }
 
-func (p CoralTranslusentParser) Parse() (shared.CostInfo, error) {
+func (p CoralTranslusentParser) Parse() (shared.ParseResult, error) {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 	link := "https://www.coral-print.ru/pechat-nakleek/"
@@ -28,17 +28,19 @@ func (p CoralTranslusentParser) Parse() (shared.CostInfo, error) {
 		chromedp.Text(".vertical-align-middle > .price", &res, chromedp.NodeVisible),
 	)
 	if err != nil {
-		return shared.CostInfo{}, err
+		return shared.ParseResult{}, err
 	}
 	intVar, err := strconv.Atoi(strings.Replace(res, " руб", "", -1))
 	if err != nil {
-		return shared.CostInfo{}, err
+		return shared.ParseResult{}, err
 	}
 
-	return shared.CostInfo{
-		Name:       "Coral",
-		Cost:       intVar,
-		ParserType: shared.Translusent,
-		Link:       link,
+	return shared.ParseResult{
+		ParserType: "Translusent",
+		Data: shared.CostData{
+			Name: "Coral",
+			Cost: intVar,
+			Link: link,
+		},
 	}, nil
 }

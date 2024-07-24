@@ -13,14 +13,16 @@ import (
 type StolitsaHoloParser struct {
 }
 
-func (p StolitsaHoloParser) Parse() shared.CostInfo {
+func (p StolitsaHoloParser) Parse() shared.ParseResult {
 	ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
 	defer cancel()
+
+	link := "https://stolitsaprint.ru/pechat-nakleek/golograficheskie/"
 
 	// run task list
 	var res string
 	err := chromedp.Run(ctx,
-		chromedp.Navigate(`https://stolitsaprint.ru/pechat-nakleek/golograficheskie/`),
+		chromedp.Navigate(link),
 		// chromedp.Sleep(time.Second*2),
 		chromedp.WaitVisible(".uCalc_276043"),
 		chromedp.SendKeys("#input_text-4", "300"),
@@ -39,9 +41,12 @@ func (p StolitsaHoloParser) Parse() shared.CostInfo {
 		log.Fatal(err)
 	}
 
-	return shared.CostInfo{
-		Name:       "Stolitsa",
-		Cost:       intVar,
-		ParserType: 1,
+	return shared.ParseResult{
+		ParserType: "Translusent",
+		Data: shared.CostData{
+			Name: "Stolitsa",
+			Cost: intVar,
+			Link: link,
+		},
 	}
 }

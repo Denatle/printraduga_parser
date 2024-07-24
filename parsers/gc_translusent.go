@@ -13,7 +13,7 @@ import (
 type GcTranslusentParser struct {
 }
 
-func (p GcTranslusentParser) Parse() (shared.CostInfo, error) {
+func (p GcTranslusentParser) Parse() (shared.ParseResult, error) {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.Flag("headless", true))
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
@@ -53,18 +53,20 @@ func (p GcTranslusentParser) Parse() (shared.CostInfo, error) {
 		// chromedp.Sleep(time.Hour),
 	)
 	if err != nil {
-		return shared.CostInfo{}, err
+		return shared.ParseResult{}, err
 	}
 	trimmedString := strings.Replace(res, " ", "", -1)
 	intVar, err := strconv.Atoi(trimmedString)
 	if err != nil {
-		return shared.CostInfo{}, err
+		return shared.ParseResult{}, err
 	}
 
-	return shared.CostInfo{
-		Name:       "GCprint",
-		Cost:       intVar,
-		ParserType: shared.Translusent,
-		Link:       link,
+	return shared.ParseResult{
+		ParserType: "Translusent",
+		Data: shared.CostData{
+			Name: "GCprint",
+			Cost: intVar,
+			Link: link,
+		},
 	}, nil
 }

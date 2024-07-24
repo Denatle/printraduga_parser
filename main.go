@@ -16,7 +16,7 @@ func main() {
 	}
 	var wg sync.WaitGroup
 	var resultMutex sync.Mutex
-	var results []shared.CostInfo
+	results := make(map[string][]shared.CostData)
 	for _, parser := range parsers {
 		wg.Add(1)
 		go func() {
@@ -28,7 +28,10 @@ func main() {
 				return
 			}
 			resultMutex.Lock()
-			results = append(results, result)
+			if results[result.ParserType] == nil {
+				results[result.ParserType] = make([]shared.CostData, 0)
+			}
+			results[result.ParserType] = append(results[result.ParserType], result.Data)
 			resultMutex.Unlock()
 		}()
 	}
