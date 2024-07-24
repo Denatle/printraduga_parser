@@ -46,7 +46,6 @@ func (d DefaultExcelWriter) Write(filename string, data []shared.CostInfo) error
 			return errors.New("Invalid CostInfo: ParserType not found")
 		}
 
-		log.Println(sheetName)
 		if err := f.SetSheetRow(sheetName, cell, &[]interface{}{
 			costinfo.Name, costinfo.Link, costinfo.Cost,
 		}); err != nil {

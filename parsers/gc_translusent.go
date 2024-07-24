@@ -62,7 +62,7 @@ func (p GcTranslusentParser) Parse() (shared.CostInfo, error) {
 	}
 
 	return shared.CostInfo{
-		Name:       "GCprint translusent",
+		Name:       "GCprint",
 		Cost:       intVar,
 		ParserType: shared.Translusent,
 		Link:       link,

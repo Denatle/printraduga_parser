@@ -54,7 +54,7 @@ func (p DigitalTranslusentParser) Parse() (shared.CostInfo, error) {
 	}
 
 	return shared.CostInfo{
-		Name:       "Digital printing translusent",
+		Name:       "Digital",
 		Cost:       intVar,
 		ParserType: shared.Translusent,
 		Link:       link,

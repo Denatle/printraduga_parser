@@ -40,7 +40,7 @@ func (p StolitsaHoloParser) Parse() shared.CostInfo {
 	}
 
 	return shared.CostInfo{
-		Name:       "Stolitsa holo",
+		Name:       "Stolitsa",
 		Cost:       intVar,
 		ParserType: 1,
 	}

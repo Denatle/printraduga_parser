@@ -36,7 +36,7 @@ func (p CoralTranslusentParser) Parse() (shared.CostInfo, error) {
 	}
 
 	return shared.CostInfo{
-		Name:       "Coral translusent",
+		Name:       "Coral",
 		Cost:       intVar,
 		ParserType: shared.Translusent,
 		Link:       link,
