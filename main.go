@@ -12,6 +12,7 @@ func main() {
 	parsers := []shared.Parser{
 		parsers.DigitalTranslusentParser{},
 		parsers.CoralTranslusentParser{},
+		parsers.GcTranslusentParser{},
 	}
 	var wg sync.WaitGroup
 	var resultMutex sync.Mutex
@@ -38,3 +39,15 @@ func main() {
 		log.Printf("Writing error: %v", err)
 	}
 }
+
+//  NOTE: Test code
+
+// func main() {
+// 	parser := parsers.GcTranslusentParser{}
+// 	data, err := parser.Parse()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	log.Print(data)
+//
+// }
