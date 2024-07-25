@@ -25,8 +25,6 @@ func (p DigitalTranslusentParser) Parse() (shared.ParseResult, error) {
 	taskCtx, cancel := chromedp.NewContext(allocCtx) // chromedp.WithDebugf(log.Printf),
 
 	defer cancel()
-	// ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
-	// defer cancel()
 
 	link := "https://digital-printing.ru/prints/stickers/prozrachnye#agree"
 	// run task list
@@ -35,14 +33,16 @@ func (p DigitalTranslusentParser) Parse() (shared.ParseResult, error) {
 		chromedp.EmulateViewport(1000, 1200),
 		chromedp.Navigate(link),
 		chromedp.WaitVisible("#pxpProducCalc > div.pxp-material-selector > div > div > ul > li.material-selector__item.material-types.option-row > span"),
-		chromedp.Click("#pxpProducCalc > div.pxp-material-selector > div > div > ul > li:nth-child(3) > ul > li:nth-child(7) > a"),
-		chromedp.Sleep(time.Second*4),
-		chromedp.Evaluate(`document.querySelector("#pxpProducCalc > div.pxp-custom-works-selector > div > div > ul > li:nth-child(1) > ul > li:nth-child(2) > span > label").click()`, nil),
-		chromedp.Click("#pxpProducCalc > div.pxp-custom-works-selector > div > div > ul > li:nth-child(1) > ul > li.option-item.with-helper.selected > span > label"),
-		// chromedp.Click("#pxpProducCalc > div.pxp-custom-works-selector > div > div > ul > li:nth-child(2) > ul > li.option-item.with-helper.zero.selected > span > label"),
-		chromedp.SendKeys("#txtQuantity", kb.Backspace+kb.Backspace+"300"),
-		chromedp.Sleep(time.Second*2),
+		chromedp.Click("#pxpProducCalc > div.pxp-material-selector > div > div > ul > li:nth-child(2) > ul > li:nth-child(3) > a"),
+		// chromedp.WaitEnabled(`//*[@id="pxpProducCalc"]/div[1]/div/div/ul/li[3]/ul/li[5]/a`),
+		chromedp.Sleep(time.Millisecond*300),
+		chromedp.Click(`//*[@id="pxpProducCalc"]/div[1]/div/div/ul/li[3]/ul/li[5]/a`),
+		chromedp.Evaluate(`document.querySelector("#pxpProducCalc > div.pxp-material-selector > div > div > ul > li:nth-child(3) > ul > li:nth-child(5) > a").dispatchEvent(new Event("click"))`, nil),
+		chromedp.Click(`//*[@id="pxpProducCalc"]/div[3]/div/div/ul/li[1]/ul/li[2]/span/label`),
+		chromedp.SendKeys("#txtQuantity", kb.Backspace+kb.Backspace+"000"),
+		chromedp.Sleep(time.Millisecond*700),
 		chromedp.Text("#pxpProducCalc > div.pxp-total-price > div > div.totalPriceContainer > div > span", &res, chromedp.NodeVisible),
+		// chromedp.Sleep(time.Hour),
 	)
 	if err != nil {
 		return shared.ParseResult{}, err

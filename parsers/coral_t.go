@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/chromedp/chromedp"
 
@@ -14,17 +15,26 @@ type CoralTranslusentParser struct {
 }
 
 func (p CoralTranslusentParser) Parse() (shared.ParseResult, error) {
-	ctx, cancel := chromedp.NewContext(context.Background())
+	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.Flag("headless", true))
+
+	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 	defer cancel()
+
+	// also set up a custom logger
+	taskCtx, cancel := chromedp.NewContext(allocCtx) // chromedp.WithDebugf(log.Printf),
+	defer cancel()
+
 	link := "https://www.coral-print.ru/pechat-nakleek/"
 
 	// run task list
 	var res string
-	err := chromedp.Run(ctx,
+	err := chromedp.Run(taskCtx,
 		chromedp.Navigate(link),
 		chromedp.WaitVisible(".wrap"),
-		// chromedp.Sleep(time.Second*1),
-		// chromedp.ScrollIntoView(".holst_list"),
+		chromedp.SetValue("#count", "1000"),
+		// chromedp.SendKeys("#count", "1000"+kb.Delete+kb.Delete+kb.Delete),
+		chromedp.SetValue("#m", "m3"),
+		chromedp.Sleep(time.Millisecond*500),
 		chromedp.Text(".vertical-align-middle > .price", &res, chromedp.NodeVisible),
 	)
 	if err != nil {

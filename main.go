@@ -45,14 +45,3 @@ func main() {
 		log.Printf("Writing error: %v", err)
 	}
 }
-
-//  NOTE: Test code
-
-// func main() {
-// 	parser := parsers.StickerPrintTranslusentParser{}
-// 	data, err := parser.Parse()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	log.Print(data)
-// }

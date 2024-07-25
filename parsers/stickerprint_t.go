@@ -34,10 +34,11 @@ func (p StickerPrintTranslusentParser) Parse() (shared.ParseResult, error) {
 		chromedp.Navigate(link),
 		chromedp.WaitVisible("#price > div"),
 		chromedp.ScrollIntoView("#forms_calc > div.dop_uslug > label:nth-child(1)"),
+		chromedp.Evaluate(`document.querySelector("#calcs_flex > div:nth-child(3) > label").click()`, nil),
 		chromedp.Click("#forms_calc > div.dop_uslug > label:nth-child(1)"),
 		chromedp.Click("#forms_calc > div.dop_uslug > label:nth-child(3)"),
-		chromedp.SetValue("#additional_option", "1280|1760|2240|2640|3120|3040|6000"),
-		chromedp.SetValue("#quantity", "300"),
+		chromedp.SetValue("#additional_option", "1200|1500|1900|2200|2600|2900|5000"),
+		chromedp.SetValue("#quantity", "1000"),
 		chromedp.Text("#result > span", &res, chromedp.NodeVisible),
 		// chromedp.Sleep(time.Hour),
 	)
