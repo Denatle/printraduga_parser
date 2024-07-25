@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"log"
 	"printraduga_parser/shared"
 
 	"github.com/xuri/excelize/v2"
@@ -11,9 +10,6 @@ type DefaultExcelWriter struct {
 }
 
 func (d DefaultExcelWriter) Write(filename string, data map[string][]shared.CostData) error {
-	for _, cost := range data {
-		log.Println(cost)
-	}
 	f := excelize.NewFile()
 	defer func() error {
 		if err := f.Close(); err != nil {

@@ -14,6 +14,7 @@ func main() {
 		parsers.DigitalTranslusentParser{},
 		parsers.CoralTranslusentParser{},
 		parsers.GcTranslusentParser{},
+		parsers.StickerPrintTranslusentParser{},
 	}
 	var wg sync.WaitGroup
 	var resultMutex sync.Mutex
@@ -37,6 +38,7 @@ func main() {
 		}()
 	}
 	wg.Wait()
+	log.Println(results)
 	var writer shared.ExcelWriter = excel.DefaultExcelWriter{}
 	err := writer.Write("parsing_result.xlsx", results)
 	if err != nil {
@@ -47,11 +49,10 @@ func main() {
 //  NOTE: Test code
 
 // func main() {
-// 	parser := parsers.GcTranslusentParser{}
+// 	parser := parsers.StickerPrintTranslusentParser{}
 // 	data, err := parser.Parse()
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
 // 	log.Print(data)
-//
 // }

@@ -2,10 +2,11 @@ package parsers
 
 import (
 	"context"
-	"github.com/chromedp/chromedp"
-	"log"
 	"strconv"
 	"time"
+
+	"github.com/chromedp/chromedp"
+	"github.com/chromedp/chromedp/kb"
 
 	shared "printraduga_parser/shared"
 )
@@ -13,32 +14,36 @@ import (
 type StolitsaHoloParser struct {
 }
 
-func (p StolitsaHoloParser) Parse() shared.ParseResult {
-	ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
+func (p StolitsaHoloParser) Parse() (shared.ParseResult, error) {
+	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.Flag("headless", false))
+
+	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
+	// also set up a custom logger
+	taskCtx, cancel := chromedp.NewContext(allocCtx) // chromedp.WithDebugf(log.Printf),
+
 	defer cancel()
 
 	link := "https://stolitsaprint.ru/pechat-nakleek/golograficheskie/"
 
 	// run task list
 	var res string
-	err := chromedp.Run(ctx,
+	err := chromedp.Run(taskCtx,
+		chromedp.EmulateViewport(1000, 1200),
 		chromedp.Navigate(link),
-		// chromedp.Sleep(time.Second*2),
-		chromedp.WaitVisible(".uCalc_276043"),
-		chromedp.SendKeys("#input_text-4", "300"),
-		chromedp.SetAttributeValue("#selector-16", "selectedIndex", "4"),
-		// chromedp.Evaluate()
-		chromedp.SetAttributeValue("#selector-17", "selectedIndex", "1"),
-		chromedp.SetAttributeValue("#selector-18", "selectedIndex", "1"),
-		chromedp.Sleep(time.Second*2),
-		chromedp.Text(".js-result-sum-value", &res),
+		chromedp.WaitVisible("#grid-1-1-24 > div"),
+		chromedp.SendKeys("#input_text-4", kb.Backspace+kb.Backspace+"300"),
+		chromedp.SendKeys("#input_text-4", kb.Backspace+kb.Backspace+"300"),
+		chromedp.SendKeys("#input_text-4", kb.Backspace+kb.Backspace+"300"),
+		chromedp.Sleep(time.Hour),
 	)
 	if err != nil {
-		log.Fatal(err)
+		return shared.ParseResult{}, err
 	}
 	intVar, err := strconv.Atoi(res)
 	if err != nil {
-		log.Fatal(err)
+		return shared.ParseResult{}, err
 	}
 
 	return shared.ParseResult{
@@ -48,5 +53,5 @@ func (p StolitsaHoloParser) Parse() shared.ParseResult {
 			Cost: intVar,
 			Link: link,
 		},
-	}
+	}, nil
 }
